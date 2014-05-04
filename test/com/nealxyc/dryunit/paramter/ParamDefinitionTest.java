@@ -34,7 +34,7 @@ public class ParamDefinitionTest {
 	@Test
 	public void testReadParamDefFromField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getField("ints");
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(null, ints);
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 		
 		Assert.assertEquals(1, defs.length);
 		Assert.assertEquals("ints", defs[0].getId());
@@ -42,7 +42,7 @@ public class ParamDefinitionTest {
 		Assert.assertTrue(defs[0].getValue().isResolved());
 		
 		Field doubles = MyClass.class.getField("doubles");
-		defs = ParamDefinition.Helper.getFromField(null, doubles);
+		defs = ParamDefinition.Helper.getFromField(doubles);
 		
 		Assert.assertEquals(1, defs.length);
 		Assert.assertEquals("doubles", defs[0].getId());
@@ -50,7 +50,7 @@ public class ParamDefinitionTest {
 		Assert.assertTrue(defs[0].getValue().isResolved());
 		
 		Field strings = MyClass.class.getField("strings");
-		defs = ParamDefinition.Helper.getFromField(null, strings);
+		defs = ParamDefinition.Helper.getFromField(strings);
 		
 		Assert.assertEquals(1, defs.length);
 		Assert.assertEquals("strings", defs[0].getId());
@@ -58,7 +58,7 @@ public class ParamDefinitionTest {
 		Assert.assertTrue(defs[0].getValue().isResolved());
 		
 		Field objects = MyClass.class.getField("objects");
-		defs = ParamDefinition.Helper.getFromField(null, objects);
+		defs = ParamDefinition.Helper.getFromField(objects);
 		
 		Assert.assertEquals(1, defs.length);
 		Assert.assertEquals("objects", defs[0].getId());
@@ -66,22 +66,17 @@ public class ParamDefinitionTest {
 		Assert.assertTrue(defs[0].getValue().isResolved());
 	}
 	
-	@Test
+	@Test(expected=ParamResolveException.class)
 	public void testReadParamDefFromInstanceField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getField("instanceInts");
 		MyClass mc = new MyClass();
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(mc, ints);
-		Assert.assertEquals(1, defs.length);
-		Assert.assertEquals("instanceInts", defs[0].getId());
-		Assert.assertEquals(Lists.newArrayList(1, 2, 3), defs[0].getValue().getResolvedValues());
-		Assert.assertTrue(defs[0].getValue().isResolved());
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 	}
 	
 	@Test
 	public void testReadMutipleParamDefFromField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getField("ints2");
-		MyClass mc = new MyClass();
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(mc, ints);
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 		Assert.assertEquals(2, defs.length);
 		Assert.assertEquals("ints2", defs[0].getId());
 		Assert.assertEquals("ints3", defs[1].getId());
@@ -94,25 +89,22 @@ public class ParamDefinitionTest {
 	@Test(expected=ParamResolveException.class)
 	public void testReadParamDefFromPrivateField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getDeclaredField("ints3");
-		MyClass mc = new MyClass();
 		//Can not access private field
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(mc, ints);
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 	}
 	
 	@Test(expected=ParamResolveException.class)
 	public void testReadParamDefFromNotCollectionField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getDeclaredField("myInt");
-		MyClass mc = new MyClass();
 		//Field is not collection
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(mc, ints);
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 	}
 	
 	@Test
 	public void testReadParamDefFromFieldNoAnnotation() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getDeclaredField("ints4");
-		MyClass mc = new MyClass();
 		//Field is not collection
-		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(mc, ints);
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 		Assert.assertEquals(0, defs.length);
 	}
 }

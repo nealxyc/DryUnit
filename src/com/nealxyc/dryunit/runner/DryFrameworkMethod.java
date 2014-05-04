@@ -7,25 +7,25 @@ import java.util.List;
 import org.junit.internal.runners.model.ReflectiveCallable;
 import org.junit.runners.model.FrameworkMethod;
 
-public class JUnitFrameworkMethod extends FrameworkMethod{
+public class DryFrameworkMethod extends FrameworkMethod{
 
     private final Object[] params ;
     
-    public JUnitFrameworkMethod(Method method) {
-	super(method);
-	if(method.getParameterTypes().length > 0){
-	    params = new Object[]{1,1};//hack!
-	}else{
-	    params = new Object[]{};
-	}
+    public DryFrameworkMethod(Method method) {
+	this(method, null);
     }
     
-    public JUnitFrameworkMethod(FrameworkMethod method) {
-	this(method.getMethod());
+    public DryFrameworkMethod(Method method, Object[] params) {
+	super(method);
+	this.params = params;
+    }
+    
+    public DryFrameworkMethod(FrameworkMethod method) {
+	this(method.getMethod(), null);
     }
     
     /**
-     * Overwrites FrameworkMethod.validatePublicVoidNoArg and skips the validation on no-arguments
+     * Overwrites FrameworkMethod.validatePublicVoidNoArg() and skips the validation on no-arguments<br>
      * Adds to {@code errors} if this method:
      * <ul>
      * <li>is not public, or

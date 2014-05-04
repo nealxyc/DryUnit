@@ -17,5 +17,11 @@ public class SampleTest {
 		Assert.assertEquals(value, v2);
 	}
 	
-	public static @ParamValues({"v1", "v2"}) int[] values = {1,2,3}; 
+	@ParamValues("v1")
+	public static int[] values = {1,2,3} ;
+	
+	@ParamValues("v2")
+	public static int valuesSupplier(@Param("v1") int seed){
+	    return seed;
+	}
 }
