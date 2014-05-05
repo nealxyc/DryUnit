@@ -14,6 +14,7 @@ public class ParamDefinitionValue {
 		FIELD,
 		METHOD
 	}
+	
 	protected ParamDefinitionValue(){}
 	
 	private Class<?> elementType ;// param type

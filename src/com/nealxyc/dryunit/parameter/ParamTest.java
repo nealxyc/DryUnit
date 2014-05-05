@@ -5,14 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.nealxyc.dryunit.parameter.ParamTest.Mode;
-
-
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface Param {
-	String value();
-	Class<?> type() default Object.class;
+@Target(ElementType.METHOD)
+public @interface ParamTest {
+	String value() default "" ;
 	Mode mode() default Mode.GROUP;
-
+	
+	public static enum Mode {
+		GROUP, PERMUTATION
+	}
 }

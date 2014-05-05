@@ -1,9 +1,11 @@
 package com.nealxyc.dryunit.parameter;
 
-import com.nealxyc.dryunit.parameter.impl.ParamRef;
+import java.util.Collection;
 
-public interface ParameterResolver extends Resolver<Object[], ParamRef>{
-	public Object[] resolve(ParamRef ref);
+
+public interface ParameterResolver extends Resolver<Collection<Object>, ParamRef>{
+	public Collection<Object> resolve(ParamRef ref) throws ParamResolveException;
+	Collection<Object[]> resolve(ParamTest testAnnotation, ParamRef... refs) throws ParamResolveException;
 //	public void put(String id, Object value);
-	public void scan(Class<?> cls);
+//	public void scan(Class<?> cls) throws ParamResolveException;
 }
