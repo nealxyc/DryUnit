@@ -20,7 +20,7 @@ public class ParamDefinitionValue {
 	/** The type of object that has ParamValues annotation on, could be a method or a field. */
 	private ParamResolveType paramResolveType ;
 	private Collection<Object> resolvedValues ;
-	private Resolver<Collection<Object>> paramResolver ;
+	private Resolver paramResolver ;
 	private boolean resolved ;
 
 	public Class<?> getElementType() {
@@ -52,11 +52,11 @@ public class ParamDefinitionValue {
 		return this;
 	}
 	
-	public Resolver<Collection<Object>> getParamResolver() {
+	public Resolver getParamResolver() {
 	    return paramResolver;
 	}
 	
-	public void setParamResolver(Resolver<Collection<Object>> paramResolver) {
+	public void setParamResolver(Resolver paramResolver) {
 	    this.paramResolver = paramResolver;
 	}
 	

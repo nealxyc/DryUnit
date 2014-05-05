@@ -12,7 +12,7 @@ public class ParameterResolverImpl implements ParameterResolver {
 	private HashMap<String, ParamDefinition> paramsDefMap  = new HashMap<String, ParamDefinition>();
 	
 	@Override
-	public Object[] get(String id) {
+	public Object[] resolve(ParamRef ref) {
 		// TODO Auto-generated method stub
 		return null;
 	}

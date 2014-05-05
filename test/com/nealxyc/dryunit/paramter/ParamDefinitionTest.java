@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.google.common.collect.Lists;
 import com.nealxyc.dryunit.parameter.ParamResolveException;
 import com.nealxyc.dryunit.parameter.ParamValues;
+import com.nealxyc.dryunit.parameter.Params;
 import com.nealxyc.dryunit.parameter.impl.ParamDefinition;
 
 public class ParamDefinitionTest {
@@ -28,6 +29,12 @@ public class ParamDefinitionTest {
 		public static int[] ints4 = {1,2,3};
 		
 		public static @ParamValues(tag) int[] tags = {1,2,3};
+		
+		@ParamValues("ints5")
+		@Params({"begin", "end"})
+		public static int[] getRange(int begin, int end){
+		    return  new int[]{1,2,3}; 
+		}
 		
 	}
 	

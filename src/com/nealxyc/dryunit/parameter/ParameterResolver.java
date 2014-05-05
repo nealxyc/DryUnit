@@ -1,7 +1,9 @@
 package com.nealxyc.dryunit.parameter;
 
-public interface ParameterResolver {
-	public Object[] get(String id);
+import com.nealxyc.dryunit.parameter.impl.ParamRef;
+
+public interface ParameterResolver extends Resolver<Object[], ParamRef>{
+	public Object[] resolve(ParamRef ref);
 //	public void put(String id, Object value);
 	public void scan(Class<?> cls);
 }
