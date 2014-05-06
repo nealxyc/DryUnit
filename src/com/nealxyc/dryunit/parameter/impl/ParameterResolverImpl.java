@@ -2,6 +2,7 @@ package com.nealxyc.dryunit.parameter.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -49,14 +50,23 @@ public class ParameterResolverImpl implements ParameterResolver {
 	    Field[] fields = cls.getFields();
 	    for(Field field: fields){
 	    	ParamDefinition[] defs = ParamDefinition.Helper.getFromField(field);
-	    	for(ParamDefinition def: defs){
-	    		this.addParamDefinition(def);
+	    	if(defs != null){
+	    		for(ParamDefinition def: defs){
+		    		this.addParamDefinition(def);
+		    	}
 	    	}
 	    }
 	    
-	    //TODO Methods
+	    for(Method m: cls.getMethods()){
+	    	ParamDefinition[] defs = ParamDefinition.Helper.getFromMethod(m);
+	    	if(defs != null){
+	    		for(ParamDefinition def: defs){
+		    		this.addParamDefinition(def);
+		    	}
+	    	}
+	    }
 	}
-
+	
 	@Override
 	public Collection<Object[]> resolve(ParamTest testAnno, ParamRef... refs) throws ParamResolveException {
 		Collection<Object[]> computedParams = new ArrayList<Object[]>();

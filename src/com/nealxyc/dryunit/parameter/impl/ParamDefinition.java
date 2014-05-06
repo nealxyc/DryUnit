@@ -3,6 +3,7 @@ package com.nealxyc.dryunit.parameter.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -46,8 +47,7 @@ public class ParamDefinition {
 		public static ParamDefinition[] getFromField(Field field)
 				throws ParamResolveException {
 			if (!Modifier.isStatic(field.getModifiers())) {
-				throw new ParamResolveException(
-						"@ParamValues has to be annotated on static field/method.");
+				return null ;
 			}
 			Annotation[] annotations = field.getAnnotations();
 			List<ParamValues> paramValuesAnno = new ArrayList<ParamValues>();
@@ -79,53 +79,11 @@ public class ParamDefinition {
 				} catch (NullPointerException e) {
 					// requires an instance to get the value
 				}
-				List<Object> resolvedValue = new ArrayList<Object>();
-				Class<?> elemType = Object.class; // default element type is
-				// object
 
-				if (fieldValue != null) {
-					if (fieldValue.getClass().isArray()) {
-						// Deal with array
-						int length = Array.getLength(fieldValue);
-						for (int i = 0; i < length; i++) {
-							resolvedValue.add(Array.get(fieldValue, i));
-						}
-						elemType = fieldValue.getClass().getComponentType();
-					} else if (Collection.class.isAssignableFrom(fieldValue
-							.getClass())) {
+				value.setElementType(Object.class);// default element type is
+													// object
+				getResolvedValue(value, fieldValue);
 
-						Collection c = (Collection) fieldValue;
-						resolvedValue.addAll(c);
-						if (c.size() > 0) {
-							elemType = c.iterator().next().getClass();
-						}
-
-					} else if (Iterable.class.isAssignableFrom(fieldValue
-							.getClass())) {
-						Iterable itr = (Iterable) fieldValue;
-						boolean gotType = false;
-						for (Object elem : itr) {
-							resolvedValue.add(elem);
-							if (!gotType) {
-								elemType = elem.getClass();
-								gotType = true;
-							}
-						}
-					} else {
-						throw new ParamResolveException(
-								String.format(
-										"Target field is not Collection, Array, or Iterable type: %s.%s",
-										field.getDeclaringClass()
-												.getSimpleName(), field
-												.getName()));
-					}
-				} else {
-					// null
-				}
-
-				value.setResolvedValues(resolvedValue);
-				value.setResolved(true);
-				value.setElementType(elemType);
 				List<ParamDefinition> defs = new ArrayList<ParamDefinition>();
 				for (ParamValues pv : paramValuesAnno) {
 					String[] ids = pv.value();
@@ -142,118 +100,119 @@ public class ParamDefinition {
 			return defList.toArray(new ParamDefinition[0]);
 		}
 
-		// public static ParamDefinition[] getFromMethod(Method method) throws
-		// ParamResolveException {
-		// if (!Modifier.isStatic(method.getModifiers())) {
-		// throw new ParamResolveException(
-		// "@ParamValues has to be annotated on static field/method.");
-		// }
-		//
-		// Annotation[] annotations = method.getAnnotations();
-		// List<ParamValues> paramValuesAnno = new ArrayList<ParamValues>();
-		// List<ParamDefinition> defList = new ArrayList<ParamDefinition>();
-		//
-		// for (Annotation an : annotations) {
-		// if (an instanceof ParamValues) {
-		// paramValuesAnno.add((ParamValues) an);
-		// }
-		// }
-		//
-		// if (paramValuesAnno.size() > 0) {
-		// ParamDefinitionValue value = new ParamDefinitionValue()
-		// .setParamResolveType(ParamResolveType.METHOD);
-		//
-		// Annotation[][] paramAnnotations = method.getParameterAnnotations();
-		// List<String> idList = new ArrayList<String>();
-		// boolean hasParamDef = false ;
-		// for(Annotation[] ans: paramAnnotations ){
-		// for(Annotation an: ans){
-		// if(an instanceof Param){
-		// idList.add(((Param) an).value());
-		// break ;
-		// }
-		// }
-		// }
-		//
-		// if(hasParamDef){
-		// value.setResolved(false);
-		// value.set
-		// }
-		// Object fieldValue = null;
-		// try {
-		// fieldValue = field.get(null);
-		// } catch (IllegalArgumentException e) {
-		// throw new ParamResolveException(String.format(
-		// "Cannot retreive value from field: %s.%s", field
-		// .getDeclaringClass().getSimpleName(), field
-		// .getName()), e);
-		// } catch (IllegalAccessException e) {
-		// throw new ParamResolveException(String.format(
-		// "Cannot retreive value from field: %s.%s", field
-		// .getDeclaringClass().getSimpleName(), field
-		// .getName()), e);
-		// } catch (NullPointerException e) {
-		// // requires an instance to get the value
-		// }
-		// List<Object> resolvedValue = new ArrayList<Object>();
-		// Class<?> elemType = Object.class; // default element type is
-		// // object
-		//
-		// if (fieldValue != null) {
-		// if (fieldValue.getClass().isArray()) {
-		// // Deal with array
-		// int length = Array.getLength(fieldValue);
-		// for (int i = 0; i < length; i++) {
-		// resolvedValue.add(Array.get(fieldValue, i));
-		// }
-		// elemType = fieldValue.getClass().getComponentType();
-		// } else if (Collection.class.isAssignableFrom(fieldValue
-		// .getClass())) {
-		//
-		// Collection c = (Collection) fieldValue;
-		// resolvedValue.addAll(c);
-		// if (c.size() > 0) {
-		// elemType = c.iterator().next().getClass();
-		// }
-		//
-		// } else if (Iterable.class.isAssignableFrom(fieldValue
-		// .getClass())) {
-		// Iterable itr = (Iterable) fieldValue;
-		// boolean gotType = false;
-		// for (Object elem : itr) {
-		// resolvedValue.add(elem);
-		// if (!gotType) {
-		// elemType = elem.getClass();
-		// gotType = true;
-		// }
-		// }
-		// } else {
-		// throw new ParamResolveException(
-		// String.format(
-		// "Target field is not Collection, Array, or Iterable type: %s.%s",
-		// field.getDeclaringClass()
-		// .getSimpleName(), field
-		// .getName()));
-		// }
-		// } else {
-		// // null
-		// }
-		//
-		// value.setResolvedValues(resolvedValue);
-		// value.setResolved(true);
-		// value.setElementType(elemType);
-		// List<ParamDefinition> defs = new ArrayList<ParamDefinition>();
-		// for (ParamValues pv : paramValuesAnno) {
-		// String[] ids = pv.value();
-		// for (String id : ids) {
-		// ParamDefinition def = new ParamDefinition();
-		// def.setId(id);
-		// def.setValue(value);
-		// defList.add(def);
-		// }
-		// }
-		//
-		// }
-		// }
+		protected static void getResolvedValue(ParamDefinitionValue value,
+				Object obj) throws ParamResolveException {
+			List<Object> resolvedValue = new ArrayList<Object>();
+			if (obj != null) {
+				if (obj.getClass().isArray()) {
+					// Deal with array
+					int length = Array.getLength(obj);
+					for (int i = 0; i < length; i++) {
+						resolvedValue.add(Array.get(obj, i));
+					}
+					value.setElementType(obj.getClass().getComponentType());
+				} else if (Collection.class.isAssignableFrom(obj.getClass())) {
+
+					Collection c = (Collection) obj;
+					resolvedValue.addAll(c);
+					if (c.size() > 0) {
+						value.setElementType(c.iterator().next().getClass());
+					}
+
+				} else if (Iterable.class.isAssignableFrom(obj.getClass())) {
+					Iterable itr = (Iterable) obj;
+					boolean gotType = false;
+					for (Object elem : itr) {
+						resolvedValue.add(elem);
+						if (!gotType) {
+							value.setElementType(elem.getClass());
+							gotType = true;
+						}
+					}
+				} else {
+					throw new ParamResolveException(
+							String.format("Target value is not Collection, Array, or Iterable type"));
+				}
+
+			}
+			// for null this sets empty collection
+			value.setResolvedValues(resolvedValue);
+			value.setResolved(true);
+		}
+
+		public static ParamDefinition[] getFromMethod(Method method)
+				throws ParamResolveException {
+			Annotation[] annotations = method.getAnnotations();
+			List<ParamValues> paramValuesAnno = new ArrayList<ParamValues>();
+			List<ParamDefinition> defList = new ArrayList<ParamDefinition>();
+
+			for (Annotation an : annotations) {
+				if (an instanceof ParamValues) {
+					paramValuesAnno.add((ParamValues) an);
+				}
+			}
+
+			if (paramValuesAnno.size() > 0) {
+				if (!Modifier.isStatic(method.getModifiers())) {
+					return null ;
+				}
+
+				if (method.getParameterTypes().length > 0) {
+					throw new ParamResolveException(
+							"@ParamValues method cannot have parameters.");
+				}
+
+				Class<?> returnType = method.getReturnType();
+				Object returned = null;
+				// //validates return type
+				// if (!(returnType.isArray() ||
+				// Collection.class.isAssignableFrom(returnType) ||
+				// Iterable.class.isAssignableFrom(returnType))) {
+				// throw new ParamResolveException(
+				// "@ParamValues method cannot have parameters.");
+				// }
+				ParamDefinitionValue value = new ParamDefinitionValue()
+						.setParamResolveType(ParamResolveType.METHOD);
+				try {
+					returned = method.invoke(null, new Object[0]);
+
+				} catch (IllegalArgumentException e) {
+					throw new ParamResolveException(
+							String.format(
+									"@ParamValues method cannot have parameters: %s.%s",
+									method.getClass().getSimpleName(),
+									method.getName()));
+				} catch (IllegalAccessException e) {
+					throw new ParamResolveException(
+							String.format(
+									"@ParamValues method has to be public: %s.%s",
+									method.getClass().getSimpleName(),
+									method.getName()));
+				} catch (InvocationTargetException e) {
+					throw new ParamResolveException(String.format(
+							"Error in invoking target method: %s.%s", method
+									.getClass().getSimpleName(), method
+									.getName()));
+				}
+
+				value.setElementType(Object.class);// default element type is
+													// object
+				getResolvedValue(value, returned);
+
+				List<ParamDefinition> defs = new ArrayList<ParamDefinition>();
+				for (ParamValues pv : paramValuesAnno) {
+					String[] ids = pv.value();
+					for (String id : ids) {
+						ParamDefinition def = new ParamDefinition();
+						def.setId(id);
+						def.setValue(value);
+						defList.add(def);
+					}
+				}
+			}
+			
+			return defList.toArray(new ParamDefinition[0]);
+		}
+
 	}
 }

@@ -1,6 +1,9 @@
 package com.nealxyc.dryunit.paramter;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +18,7 @@ public class ParamDefinitionTest {
 
 	public static class MyClass{
 	    
-	    	public static final String tag = "myVar";
+	    public static final String tag = "myVar";
 		public static @ParamValues("ints") int[] ints = {1,2,3};
 		public static @ParamValues("doubles") double[] doubles = {1,2,3};
 		public static @ParamValues("strings") String[] strings = {"a", "b", "c"};
@@ -31,9 +34,8 @@ public class ParamDefinitionTest {
 		public static @ParamValues(tag) int[] tags = {1,2,3};
 		
 		@ParamValues("ints5")
-		@Params({"begin", "end"})
-		public static int[] getRange(int begin, int end){
-		    return  new int[]{1,2,3}; 
+		public static int[] getRange(){
+		    return new int[]{1,2,3}; 
 		}
 		
 	}
@@ -73,11 +75,12 @@ public class ParamDefinitionTest {
 		Assert.assertTrue(defs[0].getValue().isResolved());
 	}
 	
-	@Test(expected=ParamResolveException.class)
+	@Test
 	public void testReadParamDefFromInstanceField() throws SecurityException, NoSuchFieldException, ParamResolveException{
 		Field ints = MyClass.class.getField("instanceInts");
 		MyClass mc = new MyClass();
 		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
+		Assert.assertNull(defs);
 	}
 	
 	@Test
@@ -113,5 +116,14 @@ public class ParamDefinitionTest {
 		//Field is not collection
 		ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
 		Assert.assertEquals(0, defs.length);
+	}
+	
+	@Test
+	public void testReadParamDefFromMethod() throws SecurityException, NoSuchFieldException, ParamResolveException, IllegalArgumentException, IllegalAccessException, InvocationTargetException, NoSuchMethodException{
+		Method getRange = MyClass.class.getMethod("getRange", null);
+		//Field is not collection
+		ParamDefinition[] defs = ParamDefinition.Helper.getFromMethod(getRange);
+		Assert.assertEquals(Arrays.asList(1,2,3), defs[0].getValue().getResolvedValues());
+//		System.out.println(Arrays.asList(MyClass.getRange()));
 	}
 }
