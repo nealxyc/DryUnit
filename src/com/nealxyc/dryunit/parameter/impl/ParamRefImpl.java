@@ -9,7 +9,8 @@ import java.util.List;
 import com.nealxyc.dryunit.parameter.ParamRef;
 import com.nealxyc.dryunit.parameter.Param;
 import com.nealxyc.dryunit.parameter.ParamResolveException;
-import com.nealxyc.dryunit.parameter.ParamTest.Mode;
+import com.nealxyc.dryunit.parameter.WithParams.Mode;
+import com.nealxyc.dryunit.parameter.WithParams;
 
 public class ParamRefImpl implements ParamRef {
 
@@ -50,28 +51,21 @@ public class ParamRefImpl implements ParamRef {
 	public static class Helper {
 
 		public static ParamRefImpl[] getFromMethod(Method method) throws ParamResolveException{
+		    WithParams params = method.getAnnotation(WithParams.class);
 		    List<ParamRefImpl> refs = new ArrayList<ParamRefImpl>();
-		    Annotation[][] paramAnnotations = method.getParameterAnnotations();
 		    Class<?>[] paramTypes = method.getParameterTypes();
+		    String[] ids = params.value() ;
+		    if(params.value().length != paramTypes.length){
+			throw new ParamResolveException(String.format("Method %s() has %s parameters but @%s contains %s values", method.getName() , paramTypes.length, WithParams.class.getSimpleName(), params.value().length));
+		    }
 		    if(paramTypes.length > 0){
 		    	for(int i = 0 ; i < paramTypes.length; i ++){
-		    		Annotation[] annotations = paramAnnotations[i];
 		    		ParamRefImpl ref = new ParamRefImpl();
-		    		for(Annotation an: annotations){
-		    			if(an instanceof Param){
-		    				Param param = (Param)an ;
-		    				ref.setId(param.value());
-		    				ref.setMode(param.mode());
-		    				ref.setType(paramTypes[i]);
-		    				refs.add(ref);
-		    				break ;
-		    			}
-		    		}
+		    		ref.setId(ids[i]);
+//    				ref.setMode(param.mode());
+    				ref.setType(paramTypes[i]);
+    				refs.add(ref);
 		    	}
-		    }
-		    
-		    if(refs.size() != paramTypes.length){
-		    	throw new ParamResolveException(String.format("All parameters have to be annotated with @%s", Param.class.getSimpleName()));
 		    }
 		    return refs.toArray(new ParamRefImpl[0]) ;
 		}

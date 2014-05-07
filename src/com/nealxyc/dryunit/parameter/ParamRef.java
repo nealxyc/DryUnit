@@ -1,6 +1,6 @@
 package com.nealxyc.dryunit.parameter;
 
-import com.nealxyc.dryunit.parameter.ParamTest.Mode;
+import com.nealxyc.dryunit.parameter.WithParams.Mode;
 
 
 public interface ParamRef {

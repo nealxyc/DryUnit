@@ -11,11 +11,11 @@ import java.util.Iterator;
 
 import com.nealxyc.dryunit.parameter.ParamRef;
 import com.nealxyc.dryunit.parameter.ParamResolveException;
-import com.nealxyc.dryunit.parameter.ParamTest;
-import com.nealxyc.dryunit.parameter.ParamTest.Mode;
+import com.nealxyc.dryunit.parameter.WithParams.Mode;
 import com.nealxyc.dryunit.parameter.ParamValues;
 import com.nealxyc.dryunit.parameter.ParameterResolver;
 import com.nealxyc.dryunit.parameter.Resolver;
+import com.nealxyc.dryunit.parameter.WithParams;
 
 public class ParameterResolverImpl implements ParameterResolver {
 
@@ -68,7 +68,7 @@ public class ParameterResolverImpl implements ParameterResolver {
 	}
 	
 	@Override
-	public Collection<Object[]> resolve(ParamTest testAnno, ParamRef... refs) throws ParamResolveException {
+	public Collection<Object[]> resolve(WithParams testAnno, ParamRef... refs) throws ParamResolveException {
 		Collection<Object[]> computedParams = new ArrayList<Object[]>();
 		if(refs.length == 0){
 			return computedParams ;
@@ -77,11 +77,11 @@ public class ParameterResolverImpl implements ParameterResolver {
 		for(int i = 0 ; i < params.length; i ++){
 			params[i] = resolve(refs[i]);
 		}
+		//Default mode is GROUP
 		Mode paramCombinationMode = Mode.GROUP ;
 		if(testAnno != null){
 			paramCombinationMode = testAnno.mode() ;
 		}
-		
 		Iterator[] itrs = new Iterator[params.length];
 		switch(paramCombinationMode){
 			case GROUP:
@@ -106,41 +106,11 @@ public class ParameterResolverImpl implements ParameterResolver {
 				}
 				break;
 			case PERMUTATION:
-				Object[] param = new Object[params.length];//contains the very first set of parameters
-				for(int j = 0 ; j < params.length; j ++){
-					itrs[j] = params[j].iterator() ;
-					param[j] = itrs[j].next();
-				}
-				int movingIdx = 0 ;
-				computedParams.add(param);
-				while(hasNext(itrs) && movingIdx < itrs.length){
-					while(itrs[movingIdx].hasNext()){
-						param = Arrays.copyOf(param, params.length);
-						param[movingIdx] = itrs[movingIdx].next() ;//permutates the [movingIdx]th parameter object
-						computedParams.add(param);
-					}
-					movingIdx ++ ;//[movingIdx]th iterator reaches the end, move to [movingIdx + 1]th
-				}
-				
+			    	computedParams.addAll(WithParams.Helper.permuateToParameters(params));
 				break ;
 		}
 		
 		return computedParams ;
 	}
 	
-	/**
-	 * Returns true if <b>any</b> Iterator in itrs has next object
-	 * @param itrs
-	 * @return
-	 */
-	private boolean hasNext(Iterator... itrs){
-		for(Iterator itr: itrs){
-			if(itr.hasNext()){
-				return true ;
-			}
-		}
-		return false ;
-	}
-	
-
 }

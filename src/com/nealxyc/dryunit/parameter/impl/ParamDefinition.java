@@ -86,13 +86,11 @@ public class ParamDefinition {
 
 				List<ParamDefinition> defs = new ArrayList<ParamDefinition>();
 				for (ParamValues pv : paramValuesAnno) {
-					String[] ids = pv.value();
-					for (String id : ids) {
-						ParamDefinition def = new ParamDefinition();
-						def.setId(id);
-						def.setValue(value);
-						defList.add(def);
-					}
+					String id = pv.value();
+					ParamDefinition def = new ParamDefinition();
+					def.setId(id);
+					def.setValue(value);
+					defList.add(def);
 				}
 
 			}
@@ -201,13 +199,11 @@ public class ParamDefinition {
 
 				List<ParamDefinition> defs = new ArrayList<ParamDefinition>();
 				for (ParamValues pv : paramValuesAnno) {
-					String[] ids = pv.value();
-					for (String id : ids) {
-						ParamDefinition def = new ParamDefinition();
-						def.setId(id);
-						def.setValue(value);
-						defList.add(def);
-					}
+					String id = pv.value();
+					ParamDefinition def = new ParamDefinition();
+					def.setId(id);
+					def.setValue(value);
+					defList.add(def);
 				}
 			}
 			
