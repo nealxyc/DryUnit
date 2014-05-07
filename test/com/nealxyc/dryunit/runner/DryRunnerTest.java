@@ -34,9 +34,9 @@ public class DryRunnerTest {
     }
     
     @Test
-    @WithParams(value={"v1", "v2"}, mode=Mode.PERMUTATION)
+    @WithParams(value={"v1", "v4"}, mode=Mode.PERMUTATION)
     public void independentArguments(int v1,int v2){
-    	counter ++ ;
+    	counter += v1 + v2 ;
     }
     
     @Test
@@ -48,7 +48,7 @@ public class DryRunnerTest {
     
     @AfterClass
     public static void tearDownOnce(){
-	Assert.assertEquals(16, counter);
+	Assert.assertEquals(120, counter);
     }
     
     @ParamValues("v1")
@@ -59,4 +59,8 @@ public class DryRunnerTest {
     
     @ParamValues("v3")
     public static int[] v3 = {1,2,3,4};
+
+    @ParamValues("v4")
+    public static int[] v4 = {5, 5,5,5};
+    
 }
