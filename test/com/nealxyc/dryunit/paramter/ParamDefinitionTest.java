@@ -33,7 +33,7 @@ public class ParamDefinitionTest {
 	public static int[] ints2 = { 1, 2, 3 };
 
 	@ParamValues("ints3")
-	public static int[] ints3 = ints2;
+	private static int[] ints3 = ints2;
 
 	public static @ParamValues("myInt")
 	int myInt = 123;
@@ -99,23 +99,7 @@ public class ParamDefinitionTest {
 	Assert.assertNull(defs);
     }
 
-    @Test
-    public void testReadMutipleParamDefFromField() throws SecurityException,
-	    NoSuchFieldException, ParamResolveException {
-	Field ints = MyClass.class.getField("ints2");
-	ParamDefinition[] defs = ParamDefinition.Helper.getFromField(ints);
-	Assert.assertEquals(2, defs.length);
-	Assert.assertEquals("ints2", defs[0].getId());
-	Assert.assertEquals("ints3", defs[1].getId());
-	Assert.assertEquals(Lists.newArrayList(1, 2, 3), defs[0].getValue()
-		.getResolvedValues());
-	Assert.assertTrue(defs[0].getValue().isResolved());
-	Assert.assertEquals(Lists.newArrayList(1, 2, 3), defs[1].getValue()
-		.getResolvedValues());
-	Assert.assertTrue(defs[1].getValue().isResolved());
-    }
-
-    @Test(expected = ParamResolveException.class)
+    @Test(expected=ParamResolveException.class)
     public void testReadParamDefFromPrivateField() throws SecurityException,
 	    NoSuchFieldException, ParamResolveException {
 	Field ints = MyClass.class.getDeclaredField("ints3");

@@ -1,6 +1,7 @@
 package com.nealxyc.dryunit.runner;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -11,9 +12,6 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 import com.nealxyc.dryunit.parameter.ParamRef;
 import com.nealxyc.dryunit.parameter.ParamResolveException;
 import com.nealxyc.dryunit.parameter.ParameterResolver;
@@ -27,11 +25,6 @@ public class DryRunner extends BlockJUnit4ClassRunner {
 
     public DryRunner(Class<?> klass) throws InitializationError {
 	super(klass);
-	// try {
-	// // resolver =
-	// } catch (ParamResolveException e) {
-	// throw new InitializationError(e);
-	// }
     }
 
     protected ParameterResolver createParameterResolver(Class<?> cls)
@@ -60,7 +53,7 @@ public class DryRunner extends BlockJUnit4ClassRunner {
 	    this.resolver = createParameterResolver(this.getTestClass()
 		    .getJavaClass());
 	}
-	List<FrameworkMethod> list = Lists.newArrayList();
+	List<FrameworkMethod> list = new ArrayList<FrameworkMethod>();
 	for (FrameworkMethod fwMethod : fwMethods) {
 	    list.addAll(computeDryTestMethods(fwMethod));
 	}
@@ -70,7 +63,7 @@ public class DryRunner extends BlockJUnit4ClassRunner {
     protected List<FrameworkMethod> computeDryTestMethods(
 	    FrameworkMethod fwMethod) throws ParamResolveException {
 
-	List<FrameworkMethod> list = Lists.newArrayList();
+	List<FrameworkMethod> list = new ArrayList<FrameworkMethod>();
 	if (isDryTestMethod(fwMethod)) {
 	    ParamRef[] refs = ParamRefImpl.Helper.getFromMethod(fwMethod
 		    .getMethod());
@@ -116,19 +109,16 @@ public class DryRunner extends BlockJUnit4ClassRunner {
 
     protected List<FrameworkMethod> wrapFramworkMethodList(
 	    List<FrameworkMethod> list) {
-	return Lists.newArrayList(Collections2.transform(list,
-		new Function<FrameworkMethod, FrameworkMethod>() {
+	List<FrameworkMethod> ret = new ArrayList<FrameworkMethod>();
+	for (FrameworkMethod fm : list) {
+	    if (isDryTestMethod(fm)) {
+		ret.add(wrapFrameworkMethod(fm));
+	    } else {
+		ret.add(fm);
+	    }
+	}
+	return ret;
 
-		    @Override
-		    public FrameworkMethod apply(FrameworkMethod input) {
-			if (isDryTestMethod(input)) {
-			    return wrapFrameworkMethod(input);
-			} else {
-			    return input;
-			}
-
-		    }
-		}));
     }
 
     protected FrameworkMethod wrapFrameworkMethod(FrameworkMethod method) {

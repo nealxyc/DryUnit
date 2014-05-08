@@ -10,12 +10,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import com.nealxyc.dryunit.parameter.Param;
-import com.nealxyc.dryunit.parameter.ParamRef;
 import com.nealxyc.dryunit.parameter.ParamResolveException;
 import com.nealxyc.dryunit.parameter.ParamValues;
-import com.nealxyc.dryunit.parameter.ParameterResolver;
-import com.nealxyc.dryunit.parameter.Resolver;
 import com.nealxyc.dryunit.parameter.impl.ParamDefinitionValue.ParamResolveType;
 
 public class ParamDefinition {
