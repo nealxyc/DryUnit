@@ -40,7 +40,7 @@ public class DryRunnerTest {
     }
     
     @Test
-    @Ignore
+    @IgnorePa
     @WithParams({"v1", "v3"})
     public void testMissingAnnotation(int v1,int v2){
     	Assert.assertTrue(Arrays.asList(ints).contains(v1));
