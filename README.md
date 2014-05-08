@@ -1,5 +1,5 @@
 # DryUnit
-A JUnit test runner for [parameterized tests](https://github.com/junit-team/junit/wiki/Parameterized-tests Parameterized-tests)
+A JUnit test runner for [parameterized tests](https://github.com/junit-team/junit/wiki/Parameterized-tests)
 
 ## What does it do exactly?
 For example, to test a Fibonacci function, one usually write:
