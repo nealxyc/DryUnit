@@ -38,3 +38,16 @@ public class FibonacciTest {
 }
 ```
 
+## Install/Download
+### Relase 0.9.0
+* Download ([jar file](https://github.com/nealxyc/DryUnit/releases/download/0.9.0/dryunit-0.9.0.jar)) ([source file](https://github.com/nealxyc/DryUnit/archive/0.9.0.zip))
+
+## Build 
+ 
+```
+mvn compile test package
+```
+
+## License
+The MIT License (MIT) http://opensource.org/licenses/MIT
+
