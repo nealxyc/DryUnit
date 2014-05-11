@@ -16,7 +16,6 @@ public class ParamRefTest {
 
     public static class MyTestClass{
 	
-	@Test
 	@WithParams({"v1", "v2", "v3"})
 	public void testWithTwoArgs(int v1, int v2){
 	    //Dont run this.

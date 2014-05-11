@@ -2,6 +2,10 @@
 
 # 
 bin
+target
 
 # mac stuff
 .DS_Store
+
+# eclipse settings
+.settings

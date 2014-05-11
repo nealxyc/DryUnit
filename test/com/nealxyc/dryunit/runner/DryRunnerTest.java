@@ -2,26 +2,27 @@ package com.nealxyc.dryunit.runner;
 
 import java.util.Arrays;
 
-import org.hamcrest.core.IsCollectionContaining;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
-import com.nealxyc.dryunit.parameter.Param;
 import com.nealxyc.dryunit.parameter.WithParams.Mode;
 import com.nealxyc.dryunit.parameter.ParamValues;
 import com.nealxyc.dryunit.parameter.WithParams;
 
 @RunWith(DryRunner.class)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DryRunnerTest {
     
-	private static int counter = 0;
-	
+    private static int counter = 0;
+
+    @BeforeClass
+    public static void setupOnce(){
+	counter = 0 ;
+    }
+    
     @Test
     public void normalTest(){
     	Assert.assertEquals(1,1);
