@@ -75,27 +75,28 @@ public class MathTest {
 DryUnit test class needs to be annotated with `@RunWith(DryRunner.class)`.
 
 ### @WithParams
-Put this annotation on the test method that needs parameters. This annotation accepts an array of Strings as parameter identifiers.
+Put this annotation on the test method that needs parameters. This annotation accepts an array of Strings as parameter identifiers.<br>
 It can also take a second argument `mode` with a value defined in the enum `com.nealxyc.dryunit.parameter.WithParams.Mode`. Default value is `Mode.GROUP`.
-* `Mode.GROUP`: In `GROUP` mode all the parameters should have the same number of values.
-	 For example, if the test method is annotated with `@WithParams({"v1", "v2"})` and 
+
+* `Mode.GROUP`: In `GROUP` mode all the parameters should have the same number of values. For example, if the test method is annotated with `@WithParams({"v1", "v2"})` and 
 	
-    ```java
-	 @ParamValues("v1") public static int[] v1 = {1, 2};
-	 @ParamValues("v2") public static int[] v2 = {3, 6};
-	 ```
+	```java
+	@ParamValues("v1") public static int[] v1 = {1, 2};
+	@ParamValues("v2") public static int[] v2 = {3, 6};
+	```
 
-Then the parameters that will be used to invoke this test method will be `{1, 3}` and `{2, 6}`.
-* `Mode.PERMUTATION`: Take all the possible combinations of parameters from the values collections. For example, if the test method is annotated with `@WithParams({"v1", "v2"})` and 
+	Then the parameters that will be used to invoke this test method will be `{1, 3}` and `{2, 6}`.
+* `Mode.PERMUTATION`: Take all the possible combinations of parameters from the value collections. For example, if the test method is annotated with `@WithParams(value={"v1", "v2"}, mode=Mode.PERMUTATION)` and 
 
-```java
-@ParamValues("v1") public static int[] v1 = {1, 2};
-@ParamValues("v2") public static int[] v2 = {1, 2, 3};
-```
-Then the parameters that will be used to invoke this test method will be the following:
-```java
-{1,1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}
-```
+	```java
+	@ParamValues("v1") public static int[] v1 = {1, 2};
+	@ParamValues("v2") public static int[] v2 = {1, 2, 3};
+	```
+	
+	Then the parameters that will be used to invoke this test method will be the following:
+	```java
+	{1,1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}
+	```
 
 
 ### @ParamValues
