@@ -47,7 +47,7 @@ public class MathTest {
 	    Assert.assertEquals(output, MyMath.square(input), 0);
     }
     
-    @ParamValues("sqIn") public static double[]  sqIn = {1,2,3,4,5,6,7};
+    @ParamValues("sqIn") public static double[]  sqIn = {1,2,-3,4,-5,6,-7};
     @ParamValues("sqOut") public static double[]  sqOut = {1,4,9,16,25,36, 49};
     
     @Test
@@ -56,8 +56,9 @@ public class MathTest {
 	    Assert.assertEquals(output, MyMath.abs(input), 0);
     }
     
-    @ParamValues("absIn") public static double[]  absIn = {1,2,-3,4,-5,6,-7, -100};
+    @ParamValues("absIn") public static double[]  absIn = sqIn;//'absIn' shares value from 'sqIn'
     
+    //Constructs values for 'absOut' from 'absIn'
     @ParamValues("absOut")
     public static double[] absOut(){
     	double[] ret = new double[absIn.length];
