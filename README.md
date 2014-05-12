@@ -62,7 +62,6 @@ public class MathTest {
     @ParamValues("absOut")
     public static double[] absOut(){
     	double[] ret = new double[absIn.length];
-    	List<Double> doubles = new ArrayList<Double>();
     	for(int i = 0; i < ret.length; i ++){
     	   ret[i] = java.lang.Math.abs(absIn[i]);
     	}
@@ -102,6 +101,11 @@ It can also take a second argument `mode` with a value defined in the enum `com.
 
 ### @ParamValues
 `@ParamValues` annotates the collection of value of the parameter identified. It can be on a public static field or a public static method.
+
+* On `public static field`: the field type has to be either array(`[]`), `Collection`, or `Iterable`. The element type should be the same as the type of the parameter identified by `@WithParams` annotation.
+* On `public static method`: the return type of this method should conform to the same rule as the above.
+
+In declaring order, if `@ParamValues` appears with a duplicated identifier, the second binding overwrites the first one.
 
 ## Install/Download
 ### Release 0.9.0
